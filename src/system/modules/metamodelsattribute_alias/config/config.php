@@ -7,7 +7,7 @@
  *
  * PHP version 5
  * @package	   MetaModels
- * @subpackage AttributeText
+ * @subpackage AttributeAlias
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  CyberSpectrum
  * @license    private
@@ -21,7 +21,7 @@ if (!defined('TL_ROOT'))
 $GLOBALS['METAMODELS']['attributes']['alias'] = array
 (
 	'class' => 'MetaModelAttributeAlias',
-	'image' => 'system/modules/metamodelsattribute_text/html/alias.gif'
+	'image' => 'system/modules/metamodelsattribute_alias/html/alias.gif'
 );
 
 ?>
