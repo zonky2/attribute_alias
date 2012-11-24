@@ -8,8 +8,8 @@
  * PHP version 5
  * @package       MetaModels
  * @subpackage AttributeAlias
- * @copyright  MEN AT WORK
- * @license    private
+ * @copyright  The MetaModels team.
+ * @license    LGPL.
  * @filesource
  */
 if (!defined('TL_ROOT'))
