@@ -44,6 +44,11 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 
 		$arrFieldDef['inputType'] = 'text';
 
+		// we do not need to set mandatory, as we will automatically update our value when isunique is given.
+		if ($this->get('isunique'))
+		{
+			$arrFieldDef['eval']['mandatory'] = false;
+		}
 		return $arrFieldDef;
 	}
 
