@@ -38,9 +38,9 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 		return array_merge(parent::getAttributeSettingNames(), array('alias_fields', 'isunique', 'force_alias'));
 	}
 
-	public function getFieldDefinition()
+	public function getFieldDefinition($arrOverrides = array())
 	{
-		$arrFieldDef = parent::getFieldDefinition();
+		$arrFieldDef = parent::getFieldDefinition($arrOverrides);
 
 		$arrFieldDef['inputType'] = 'text';
 
