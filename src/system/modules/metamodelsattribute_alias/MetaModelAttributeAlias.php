@@ -35,7 +35,15 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 
 	public function getAttributeSettingNames()
 	{
-		return array_merge(parent::getAttributeSettingNames(), array('alias_fields', 'isunique', 'force_alias'));
+		return array_merge(parent::getAttributeSettingNames(), array(
+			'alias_fields',
+			'isunique',
+			'force_alias',
+			'mandatory',
+			'filterable',
+			'searchable',
+			'sortable'
+		));
 	}
 
 	public function getFieldDefinition($arrOverrides = array())
