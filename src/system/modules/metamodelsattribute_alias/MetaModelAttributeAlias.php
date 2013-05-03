@@ -37,6 +37,7 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 			'isunique',
 			'force_alias',
 			'mandatory',
+			'alwaysSave',
 			'filterable',
 			'searchable',
 			'sortable'

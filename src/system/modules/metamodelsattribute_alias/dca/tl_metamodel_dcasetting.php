@@ -22,6 +22,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id'
 	),
 	'functions'  => array(
 		'mandatory',
+		'alwaysSave'
 	),
 	'overview' => array(
 		'filterable',
