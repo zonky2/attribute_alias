@@ -55,6 +55,13 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 		{
 			$arrFieldDef['eval']['mandatory'] = false;
 		}
+		
+		// If "force_alias" is ture set alwaysSave to true.
+		if ($this->get('force_alias'))
+		{
+			$arrFieldDef['eval']['alwaysSave'] = true;
+		}
+		
 		return $arrFieldDef;
 	}
 
