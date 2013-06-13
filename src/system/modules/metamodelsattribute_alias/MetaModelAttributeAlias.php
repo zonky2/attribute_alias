@@ -76,6 +76,12 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 			return;
 		}
 
+		// item is a variant but no overriding allowed, get out!
+		if ($objItem->isVariant() && (!$this->get('isvariant')))
+		{
+			return;
+		}
+
 		$arrAlias = '';
 		foreach (deserialize($this->get('alias_fields')) as $strAttribute)
 		{
