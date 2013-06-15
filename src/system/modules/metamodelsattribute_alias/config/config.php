@@ -15,8 +15,5 @@
  * @filesource
  */
 
-$GLOBALS['METAMODELS']['attributes']['alias'] = array
-(
-	'class' => 'MetaModelAttributeAlias',
-	'image' => 'system/modules/metamodelsattribute_alias/html/alias.png'
-);
+$GLOBALS['METAMODELS']['attributes']['alias']['class'] = 'MetaModelAttributeAlias';
+$GLOBALS['METAMODELS']['attributes']['alias']['image'] = 'system/modules/metamodelsattribute_alias/html/alias.png';
