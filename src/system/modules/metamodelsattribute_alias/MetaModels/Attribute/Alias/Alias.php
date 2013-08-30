@@ -15,6 +15,10 @@
  * @filesource
  */
 
+namespace MetaModels\Attribute\Alias;
+
+use MetaModels\Attribute\BaseSimple;
+
 /**
  * This is the MetaModelAttribute class for handling text fields.
  *
@@ -22,7 +26,7 @@
  * @subpackage AttributeAlias
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  */
-class MetaModelAttributeAlias extends MetaModelAttributeSimple
+class Alias extends BaseSimple
 {
 
 	public function getSQLDataType()
@@ -55,13 +59,13 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 		{
 			$arrFieldDef['eval']['mandatory'] = false;
 		}
-		
+
 		// If "force_alias" is ture set alwaysSave to true.
 		if ($this->get('force_alias'))
 		{
 			$arrFieldDef['eval']['alwaysSave'] = true;
 		}
-		
+
 		return $arrFieldDef;
 	}
 
