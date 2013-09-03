@@ -18,6 +18,7 @@
 namespace MetaModels\Attribute\Alias;
 
 use MetaModels\Attribute\BaseSimple;
+use MetaModels\Helper\ContaoController;
 
 /**
  * This is the MetaModelAttribute class for handling text fields.
@@ -96,7 +97,7 @@ class Alias extends BaseSimple
 		// Implode with '-', replace inserttags and strip HTML elements.
 		$strAlias  = standardize(
 			strip_tags(
-				MetaModelController::getInstance()->replaceInsertTags(implode('-', $arrAlias))
+				ContaoController::getInstance()->replaceInsertTags(implode('-', $arrAlias))
 			)
 		);
 
