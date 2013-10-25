@@ -76,6 +76,12 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 			return;
 		}
 
+		// item is a variant but no overriding allowed, get out!
+		if ($objItem->isVariant() && (!$this->get('isvariant')))
+		{
+			return;
+		}
+
 		$arrAlias = '';
 		foreach (deserialize($this->get('alias_fields')) as $strAttribute)
 		{
@@ -83,8 +89,12 @@ class MetaModelAttributeAlias extends MetaModelAttributeSimple
 			$arrAlias[] = $arrValues['text'];
 		}
 
-		// implode with '-'
-		$strAlias  = standardize(implode('-', $arrAlias));
+		// Implode with '-', replace inserttags and strip HTML elements.
+		$strAlias  = standardize(
+			strip_tags(
+				MetaModelController::getInstance()->replaceInsertTags(implode('-', $arrAlias))
+			)
+		);
 
 		// we need to fetch the attribute values for all attribs in the alias_fields and update the database and the model accordingly.
 		if ($this->get('isunique'))
