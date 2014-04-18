@@ -17,19 +17,6 @@
  */
 
 /**
- * Register the classes
- */
-ClassLoader::addClasses(array
-(
-	'MetaModels\Attribute\Alias\Alias'     => 'system/modules/metamodelsattribute_alias/MetaModels/Attribute/Alias/Alias.php',
-	'MetaModels\Dca\AttributeAlias'        => 'system/modules/metamodelsattribute_alias/MetaModels/Dca/AttributeAlias.php',
-
-	'MetaModelAttributeAlias'              => 'system/modules/metamodelsattribute_alias/deprecated/MetaModelAttributeAlias.php',
-	'TableMetaModelsAttributeAlias'        => 'system/modules/metamodelsattribute_alias/deprecated/TableMetaModelsAttributeAlias.php',
-));
-
-
-/**
  * Register the templates
  */
 TemplateLoader::addFiles(array
