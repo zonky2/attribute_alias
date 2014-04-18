@@ -17,8 +17,9 @@
 
 namespace MetaModels\Attribute\Alias;
 
+use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
+use ContaoCommunityAlliance\Contao\Bindings\Events\Controller\ReplaceInsertTagsEvent;
 use MetaModels\Attribute\BaseSimple;
-use MetaModels\Helper\ContaoController;
 
 /**
  * This is the MetaModelAttribute class for handling text fields.
@@ -29,12 +30,17 @@ use MetaModels\Helper\ContaoController;
  */
 class Alias extends BaseSimple
 {
-
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getSQLDataType()
 	{
 		return 'varchar(255) NOT NULL default \'\'';
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getAttributeSettingNames()
 	{
 		return array_merge(parent::getAttributeSettingNames(), array(
@@ -49,13 +55,16 @@ class Alias extends BaseSimple
 		));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getFieldDefinition($arrOverrides = array())
 	{
 		$arrFieldDef = parent::getFieldDefinition($arrOverrides);
 
 		$arrFieldDef['inputType'] = 'text';
 
-		// we do not need to set mandatory, as we will automatically update our value when isunique is given.
+		// W do not need to set mandatory, as we will automatically update our value when isunique is given.
 		if ($this->get('isunique'))
 		{
 			$arrFieldDef['eval']['mandatory'] = false;
@@ -75,13 +84,13 @@ class Alias extends BaseSimple
 	 */
 	public function modelSaved($objItem)
 	{
-		// alias already defined and no update forced, get out!
+		// Alias already defined and no update forced, get out!
 		if ($objItem->get($this->getColName()) && (!$this->get('force_alias')))
 		{
 			return;
 		}
 
-		// item is a variant but no overriding allowed, get out!
+		// Item is a variant but no overriding allowed, get out!
 		if ($objItem->isVariant() && (!$this->get('isvariant')))
 		{
 			return;
@@ -90,27 +99,29 @@ class Alias extends BaseSimple
 		$arrAlias = '';
 		foreach (deserialize($this->get('alias_fields')) as $strAttribute)
 		{
-			$arrValues = $objItem->parseAttribute($strAttribute['field_attribute'], 'text', null);
+			$arrValues  = $objItem->parseAttribute($strAttribute['field_attribute'], 'text', null);
 			$arrAlias[] = $arrValues['text'];
 		}
 
-		// Implode with '-', replace inserttags and strip HTML elements.
-		$strAlias  = standardize(
-			strip_tags(
-				ContaoController::getInstance()->replaceInsertTags(implode('-', $arrAlias))
-			)
-		);
+		/** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
+		$dispatcher   = $GLOBALS['container']['event-dispatcher'];
+		$replaceEvent = new ReplaceInsertTagsEvent(implode('-', $arrAlias));
+		$dispatcher->dispatch(ContaoEvents::CONTROLLER_REPLACE_INSERT_TAGS, $replaceEvent);
 
-		// we need to fetch the attribute values for all attribs in the alias_fields and update the database and the model accordingly.
+		// Implode with '-', replace inserttags and strip HTML elements.
+		$strAlias = standardize(strip_tags($replaceEvent->getBuffer()));
+
+		// We need to fetch the attribute values for all attributes in the alias_fields and update the database and the
+		// model accordingly.
 		if ($this->get('isunique'))
 		{
-			// ensure uniqueness.
+			// Ensure uniqueness.
 			$strBaseAlias = $strAlias;
-			$arrIds = array($objItem->get('id'));
-			$intCount = 2;
-			while(array_diff($this->searchFor($strAlias), $arrIds))
+			$arrIds       = array($objItem->get('id'));
+			$intCount     = 2;
+			while (array_diff($this->searchFor($strAlias), $arrIds))
 			{
-				$strAlias = $strBaseAlias . '-' . $intCount++;
+				$strAlias = $strBaseAlias . '-' . ($intCount++);
 			}
 		}
 

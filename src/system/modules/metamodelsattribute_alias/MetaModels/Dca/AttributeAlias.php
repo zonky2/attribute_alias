@@ -30,24 +30,25 @@ class AttributeAlias
 {
 
 	/**
-	 * Fetch all attributes from the parenting MetaModel. Called as options_callback.
-	 * User the oncreate_callback.
+	 * Fetch all attributes from the parenting MetaModel.
+	 *
+	 * Called as options_callback.
 	 *
 	 * @return array
 	 */
 	public function getAllAttributes()
 	{
-		$intID = \Input::getInstance()->get('id');
-		$intPID = \Input::getInstance()->get('pid');
+		$id  = \Input::getInstance()->get('id');
+		$pid = \Input::getInstance()->get('pid');
 
 		$arrReturn = array();
 
-		if (empty($intPID))
+		if (empty($pid))
 		{
 			$objResult = \Database::getInstance()
 				->prepare('SELECT pid FROM tl_metamodel_attribute WHERE id=?')
 				->limit(1)
-				->execute($intID);
+				->execute($id);
 
 			if ($objResult->numRows == 0)
 			{
@@ -55,7 +56,7 @@ class AttributeAlias
 			}
 			$objMetaModel = Factory::byId($objResult->pid);
 		} else {
-			$objMetaModel = Factory::byId($intPID);
+			$objMetaModel = Factory::byId($pid);
 		}
 
 		foreach ($objMetaModel->getAttributes() as $objAttribute)
@@ -65,5 +66,3 @@ class AttributeAlias
 		return $arrReturn;
 	}
 }
-
-?>
