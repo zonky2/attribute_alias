@@ -40,8 +40,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['alias_fields'] = array
 				'label'                 => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['field_attribute'],
 				'exclude'               => true,
 				'inputType'             => 'select',
-				'options_callback'      => array('MetaModels\Dca\AttributeAlias','getAllAttributes'),
-					'eval' => array
+				'eval'                  => array
 					(
 					'style'             => 'width:600px',
 					'chosen'            => 'true'
@@ -58,6 +57,6 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['force_alias'] = array
 	'inputType'               => 'checkbox',
 	'eval'                    => array
 	(
-		'tl_class'=>'cbx w50'
+		'tl_class'            => 'cbx w50'
 	),
 );

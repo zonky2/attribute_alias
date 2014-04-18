@@ -18,6 +18,5 @@
 $GLOBALS['METAMODELS']['attributes']['alias']['class'] = 'MetaModels\Attribute\Alias\Alias';
 $GLOBALS['METAMODELS']['attributes']['alias']['image'] = 'system/modules/metamodelsattribute_alias/html/alias.png';
 
-// non composerized Contao 2.X autoload support.
-$GLOBALS['MM_AUTOLOAD'][] = dirname(__DIR__);
-$GLOBALS['MM_AUTOLOAD'][] = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'deprecated';
+$GLOBALS['TL_EVENTS'][\ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent::NAME][] =
+	'MetaModels\DcGeneral\Events\Table\Attribute\Alias\PropertyAttribute::registerEvents';
