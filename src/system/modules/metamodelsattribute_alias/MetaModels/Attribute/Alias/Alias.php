@@ -43,16 +43,19 @@ class Alias extends BaseSimple
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(parent::getAttributeSettingNames(), array(
-            'alias_fields',
-            'isunique',
-            'force_alias',
-            'mandatory',
-            'alwaysSave',
-            'filterable',
-            'searchable',
-            'sortable'
-        ));
+        return array_merge(
+            parent::getAttributeSettingNames(),
+            array(
+                'alias_fields',
+                'isunique',
+                'force_alias',
+                'mandatory',
+                'alwaysSave',
+                'filterable',
+                'searchable',
+                'sortable'
+            )
+        );
     }
 
     /**
@@ -65,14 +68,12 @@ class Alias extends BaseSimple
         $arrFieldDef['inputType'] = 'text';
 
         // W do not need to set mandatory, as we will automatically update our value when isunique is given.
-        if ($this->get('isunique'))
-        {
+        if ($this->get('isunique')) {
             $arrFieldDef['eval']['mandatory'] = false;
         }
 
         // If "force_alias" is ture set alwaysSave to true.
-        if ($this->get('force_alias'))
-        {
+        if ($this->get('force_alias')) {
             $arrFieldDef['eval']['alwaysSave'] = true;
         }
 
@@ -85,20 +86,17 @@ class Alias extends BaseSimple
     public function modelSaved($objItem)
     {
         // Alias already defined and no update forced, get out!
-        if ($objItem->get($this->getColName()) && (!$this->get('force_alias')))
-        {
+        if ($objItem->get($this->getColName()) && (!$this->get('force_alias'))) {
             return;
         }
 
         // Item is a variant but no overriding allowed, get out!
-        if ($objItem->isVariant() && (!$this->get('isvariant')))
-        {
+        if ($objItem->isVariant() && (!$this->get('isvariant'))) {
             return;
         }
 
         $arrAlias = '';
-        foreach (deserialize($this->get('alias_fields')) as $strAttribute)
-        {
+        foreach (deserialize($this->get('alias_fields')) as $strAttribute) {
             $arrValues  = $objItem->parseAttribute($strAttribute['field_attribute'], 'text', null);
             $arrAlias[] = $arrValues['text'];
         }
@@ -113,14 +111,12 @@ class Alias extends BaseSimple
 
         // We need to fetch the attribute values for all attributes in the alias_fields and update the database and the
         // model accordingly.
-        if ($this->get('isunique'))
-        {
+        if ($this->get('isunique')) {
             // Ensure uniqueness.
             $strBaseAlias = $strAlias;
             $arrIds       = array($objItem->get('id'));
             $intCount     = 2;
-            while (array_diff($this->searchFor($strAlias), $arrIds))
-            {
+            while (array_diff($this->searchFor($strAlias), $arrIds)) {
                 $strAlias = $strBaseAlias . '-' . ($intCount++);
             }
         }

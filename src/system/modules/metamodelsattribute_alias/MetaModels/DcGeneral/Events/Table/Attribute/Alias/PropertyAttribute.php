@@ -26,8 +26,7 @@ use MetaModels\Factory;
 /**
  * Handle events for tl_metamodel_attribute.alias_fields.attr_id.
  */
-class PropertyAttribute
-    extends BaseSubscriber
+class PropertyAttribute extends BaseSubscriber
 {
     /**
      * Register all listeners to handle creation of a data container.
@@ -56,8 +55,7 @@ class PropertyAttribute
     public static function registerTableMetaModelAttributeEvents(BuildDataDefinitionEvent $event)
     {
         static $registered;
-        if ($registered)
-        {
+        if ($registered) {
             return;
         }
         $registered = true;
@@ -84,18 +82,15 @@ class PropertyAttribute
         $model     = $event->getModel();
         $metaModel = Factory::byId($model->getProperty('pid'));
 
-        if (!$metaModel)
-        {
+        if (!$metaModel) {
             return;
         }
 
         $result = array();
 
         // Fetch all attributes except for the current attribute.
-        foreach ($metaModel->getAttributes() as $attribute)
-        {
-            if ($attribute->get('id') === $model->getId())
-            {
+        foreach ($metaModel->getAttributes() as $attribute) {
+            if ($attribute->get('id') === $model->getId()) {
                 continue;
             }
 
