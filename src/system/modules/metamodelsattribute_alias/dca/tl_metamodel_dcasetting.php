@@ -17,17 +17,20 @@
 
 $GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['alias'] = array
 (
-	'presentation' => array(
-		'tl_class',
-	),
-	'functions'  => array(
-		'mandatory',
-		'alwaysSave'
-	),
-	'overview' => array(
-		'filterable',
-		'searchable',
-		'sortable',
-		'flag'
-	)
+    'presentation' => array
+    (
+        'tl_class',
+    ),
+    'functions'    => array
+    (
+        'mandatory',
+        'alwaysSave'
+    ),
+    'overview'     => array
+    (
+        'filterable',
+        'searchable',
+        'sortable',
+        'flag'
+    )
 );
