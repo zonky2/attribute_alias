@@ -30,102 +30,102 @@ use MetaModels\Attribute\BaseSimple;
  */
 class Alias extends BaseSimple
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getSQLDataType()
-	{
-		return 'varchar(255) NOT NULL default \'\'';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getSQLDataType()
+    {
+        return 'varchar(255) NOT NULL default \'\'';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getAttributeSettingNames()
-	{
-		return array_merge(parent::getAttributeSettingNames(), array(
-			'alias_fields',
-			'isunique',
-			'force_alias',
-			'mandatory',
-			'alwaysSave',
-			'filterable',
-			'searchable',
-			'sortable'
-		));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getAttributeSettingNames()
+    {
+        return array_merge(parent::getAttributeSettingNames(), array(
+            'alias_fields',
+            'isunique',
+            'force_alias',
+            'mandatory',
+            'alwaysSave',
+            'filterable',
+            'searchable',
+            'sortable'
+        ));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldDefinition($arrOverrides = array())
-	{
-		$arrFieldDef = parent::getFieldDefinition($arrOverrides);
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldDefinition($arrOverrides = array())
+    {
+        $arrFieldDef = parent::getFieldDefinition($arrOverrides);
 
-		$arrFieldDef['inputType'] = 'text';
+        $arrFieldDef['inputType'] = 'text';
 
-		// W do not need to set mandatory, as we will automatically update our value when isunique is given.
-		if ($this->get('isunique'))
-		{
-			$arrFieldDef['eval']['mandatory'] = false;
-		}
+        // W do not need to set mandatory, as we will automatically update our value when isunique is given.
+        if ($this->get('isunique'))
+        {
+            $arrFieldDef['eval']['mandatory'] = false;
+        }
 
-		// If "force_alias" is ture set alwaysSave to true.
-		if ($this->get('force_alias'))
-		{
-			$arrFieldDef['eval']['alwaysSave'] = true;
-		}
+        // If "force_alias" is ture set alwaysSave to true.
+        if ($this->get('force_alias'))
+        {
+            $arrFieldDef['eval']['alwaysSave'] = true;
+        }
 
-		return $arrFieldDef;
-	}
+        return $arrFieldDef;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function modelSaved($objItem)
-	{
-		// Alias already defined and no update forced, get out!
-		if ($objItem->get($this->getColName()) && (!$this->get('force_alias')))
-		{
-			return;
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function modelSaved($objItem)
+    {
+        // Alias already defined and no update forced, get out!
+        if ($objItem->get($this->getColName()) && (!$this->get('force_alias')))
+        {
+            return;
+        }
 
-		// Item is a variant but no overriding allowed, get out!
-		if ($objItem->isVariant() && (!$this->get('isvariant')))
-		{
-			return;
-		}
+        // Item is a variant but no overriding allowed, get out!
+        if ($objItem->isVariant() && (!$this->get('isvariant')))
+        {
+            return;
+        }
 
-		$arrAlias = '';
-		foreach (deserialize($this->get('alias_fields')) as $strAttribute)
-		{
-			$arrValues  = $objItem->parseAttribute($strAttribute['field_attribute'], 'text', null);
-			$arrAlias[] = $arrValues['text'];
-		}
+        $arrAlias = '';
+        foreach (deserialize($this->get('alias_fields')) as $strAttribute)
+        {
+            $arrValues  = $objItem->parseAttribute($strAttribute['field_attribute'], 'text', null);
+            $arrAlias[] = $arrValues['text'];
+        }
 
-		/** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
-		$dispatcher   = $GLOBALS['container']['event-dispatcher'];
-		$replaceEvent = new ReplaceInsertTagsEvent(implode('-', $arrAlias));
-		$dispatcher->dispatch(ContaoEvents::CONTROLLER_REPLACE_INSERT_TAGS, $replaceEvent);
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
+        $dispatcher   = $GLOBALS['container']['event-dispatcher'];
+        $replaceEvent = new ReplaceInsertTagsEvent(implode('-', $arrAlias));
+        $dispatcher->dispatch(ContaoEvents::CONTROLLER_REPLACE_INSERT_TAGS, $replaceEvent);
 
-		// Implode with '-', replace inserttags and strip HTML elements.
-		$strAlias = standardize(strip_tags($replaceEvent->getBuffer()));
+        // Implode with '-', replace inserttags and strip HTML elements.
+        $strAlias = standardize(strip_tags($replaceEvent->getBuffer()));
 
-		// We need to fetch the attribute values for all attributes in the alias_fields and update the database and the
-		// model accordingly.
-		if ($this->get('isunique'))
-		{
-			// Ensure uniqueness.
-			$strBaseAlias = $strAlias;
-			$arrIds       = array($objItem->get('id'));
-			$intCount     = 2;
-			while (array_diff($this->searchFor($strAlias), $arrIds))
-			{
-				$strAlias = $strBaseAlias . '-' . ($intCount++);
-			}
-		}
+        // We need to fetch the attribute values for all attributes in the alias_fields and update the database and the
+        // model accordingly.
+        if ($this->get('isunique'))
+        {
+            // Ensure uniqueness.
+            $strBaseAlias = $strAlias;
+            $arrIds       = array($objItem->get('id'));
+            $intCount     = 2;
+            while (array_diff($this->searchFor($strAlias), $arrIds))
+            {
+                $strAlias = $strBaseAlias . '-' . ($intCount++);
+            }
+        }
 
-		$this->setDataFor(array($objItem->get('id') => $strAlias));
-		$objItem->set($this->getColName(), $strAlias);
-	}
+        $this->setDataFor(array($objItem->get('id') => $strAlias));
+        $objItem->set($this->getColName(), $strAlias);
+    }
 }
