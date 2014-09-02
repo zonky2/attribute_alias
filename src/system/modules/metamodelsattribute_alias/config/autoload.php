@@ -19,7 +19,9 @@
 /**
  * Register the templates
  */
-TemplateLoader::addFiles(array
-(
-	'mm_attr_alias'              => 'system/modules/metamodelsattribute_alias/templates',
-));
+TemplateLoader::addFiles(
+    array
+    (
+        'mm_attr_alias' => 'system/modules/metamodelsattribute_alias/templates',
+    )
+);
