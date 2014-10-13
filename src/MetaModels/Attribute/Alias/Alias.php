@@ -82,6 +82,9 @@ class Alias extends BaseSimple
 
     /**
      * {@inheritdoc}
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function modelSaved($objItem)
     {
