@@ -19,7 +19,6 @@ namespace MetaModels\DcGeneral\Events\Table\Attribute\Alias;
 
 use ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
-use ContaoCommunityAlliance\DcGeneral\Factory\Event\BuildDataDefinitionEvent;
 use MetaModels\DcGeneral\Events\BaseSubscriber;
 use MetaModels\Factory;
 
@@ -48,26 +47,16 @@ class PropertyAttribute extends BaseSubscriber
     /**
      * Register the events for table tl_metamodel_attribute.
      *
-     * @param BuildDataDefinitionEvent $event The event being processed.
-     *
      * @return void
      */
-    public static function registerTableMetaModelAttributeEvents(BuildDataDefinitionEvent $event)
+    public static function registerTableMetaModelAttributeEvents()
     {
         static $registered;
         if ($registered) {
             return;
         }
         $registered = true;
-        $dispatcher = $event->getDispatcher();
-
-        self::registerListeners(
-            array(
-                GetPropertyOptionsEvent::NAME => __CLASS__ . '::getOptions',
-            ),
-            $dispatcher,
-            array('tl_metamodel_attribute', 'alias_fields', 'field_attribute')
-        );
+        self::registerListeners(array(GetPropertyOptionsEvent::NAME => __CLASS__ . '::getOptions'), func_get_arg(2));
     }
 
     /**
@@ -79,7 +68,14 @@ class PropertyAttribute extends BaseSubscriber
      */
     public static function getOptions(GetPropertyOptionsEvent $event)
     {
-        $model     = $event->getModel();
+        $model = $event->getModel();
+        if (($event->getEnvironment()->getDataDefinition()->getName() !== 'tl_metamodel_attribute')
+            || ($model->getProperty('type') !== 'alias')
+            || ($event->getPropertyName() !== 'field_attribute')
+        ) {
+            return;
+        }
+
         $metaModel = Factory::byId($model->getProperty('pid'));
 
         if (!$metaModel) {
