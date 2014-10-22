@@ -24,6 +24,6 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['alias_fields'][1]      =
     'Please select one or more attributes to combine a alias.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['field_attribute']      = 'Attributes';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['force_alias'][0]       = 'Force alias regenerating';
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['force_alias'][0]       =
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['force_alias'][1]       =
     'Check this, if you want the alias to be regenerated whenever any of the dependant fields is changed. Note that ' .
     'this will invalidate old urls that are based upon the alias.';
