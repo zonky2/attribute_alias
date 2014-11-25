@@ -18,7 +18,7 @@
 namespace MetaModels\DcGeneral\Events\Table\Attribute\Alias;
 
 use ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent;
-use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
+use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
 use MetaModels\DcGeneral\Events\BaseSubscriber;
 use MetaModels\Factory;
 
@@ -56,22 +56,23 @@ class PropertyAttribute extends BaseSubscriber
             return;
         }
         $registered = true;
-        self::registerListeners(array(GetPropertyOptionsEvent::NAME => __CLASS__ . '::getOptions'), func_get_arg(2));
+        self::registerListeners(array(GetOptionsEvent::NAME => __CLASS__ . '::getOptions'), func_get_arg(2));
     }
 
     /**
      * Retrieve the options for the attributes.
      *
-     * @param GetPropertyOptionsEvent $event The event.
+     * @param GetOptionsEvent $event The event.
      *
      * @return void
      */
-    public static function getOptions(GetPropertyOptionsEvent $event)
+    public static function getOptions(GetOptionsEvent $event)
     {
         $model = $event->getModel();
         if (($event->getEnvironment()->getDataDefinition()->getName() !== 'tl_metamodel_attribute')
             || ($model->getProperty('type') !== 'alias')
-            || ($event->getPropertyName() !== 'field_attribute')
+            || ($event->getPropertyName() !== 'alias_fields')
+            || ($event->getSubPropertyName() !== 'field_attribute')
         ) {
             return;
         }
