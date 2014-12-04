@@ -18,6 +18,7 @@
 namespace MetaModels\DcGeneral\Events\Table\Attribute\Alias;
 
 use ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent;
+use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\IdSerializer;
 use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
 use MetaModels\DcGeneral\Events\BaseSubscriber;
 use MetaModels\Factory;
@@ -60,6 +61,28 @@ class PropertyAttribute extends BaseSubscriber
     }
 
     /**
+     * Check if the event is intended for us.
+     *
+     * @param GetOptionsEvent $event The event to test.
+     *
+     * @return bool
+     */
+    private static function isEventForMe(GetOptionsEvent $event)
+    {
+        $input = $event->getEnvironment()->getInputProvider();
+        $type  = $event->getModel()->getProperty('type');
+        if (empty($type) && $input->hasValue('type')) {
+            $type = $input->getValue('type');
+        }
+
+        return
+            ($event->getEnvironment()->getDataDefinition()->getName() !== 'tl_metamodel_attribute')
+            || ($type !== 'alias')
+            || ($event->getPropertyName() !== 'alias_fields')
+            || ($event->getSubPropertyName() !== 'field_attribute');
+    }
+
+    /**
      * Retrieve the options for the attributes.
      *
      * @param GetOptionsEvent $event The event.
@@ -68,16 +91,19 @@ class PropertyAttribute extends BaseSubscriber
      */
     public static function getOptions(GetOptionsEvent $event)
     {
-        $model = $event->getModel();
-        if (($event->getEnvironment()->getDataDefinition()->getName() !== 'tl_metamodel_attribute')
-            || ($model->getProperty('type') !== 'alias')
-            || ($event->getPropertyName() !== 'alias_fields')
-            || ($event->getSubPropertyName() !== 'field_attribute')
-        ) {
+        if (self::isEventForMe($event)) {
             return;
         }
 
-        $metaModel = Factory::byId($model->getProperty('pid'));
+        $model       = $event->getModel();
+        $metaModelId = $model->getProperty('pid');
+        if (!$metaModelId) {
+            $metaModelId = IdSerializer::fromSerialized(
+                $event->getEnvironment()->getInputProvider()->getValue('pid')
+            )->getId();
+        }
+
+        $metaModel = Factory::byId($metaModelId);
 
         if (!$metaModel) {
             return;
