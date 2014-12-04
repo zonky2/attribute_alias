@@ -71,8 +71,13 @@ class PropertyAttribute extends BaseSubscriber
     {
         $input = $event->getEnvironment()->getInputProvider();
         $type  = $event->getModel()->getProperty('type');
-        if (empty($type) && $input->hasValue('type')) {
+
+        if ($input->hasValue('type')) {
             $type = $input->getValue('type');
+        }
+
+        if (empty($type)) {
+            $type = $event->getModel()->getProperty('type');
         }
 
         return
