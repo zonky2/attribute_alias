@@ -19,6 +19,9 @@
 
 $GLOBALS['METAMODELS']['attributes']['alias']['class'] = 'MetaModels\Attribute\Alias\Alias';
 $GLOBALS['METAMODELS']['attributes']['alias']['image'] = 'system/modules/metamodelsattribute_alias/html/alias.png';
+$GLOBALS['TL_EVENTS'][\MetaModels\MetaModelsEvents::SUBSYSTEM_BOOT_BACKEND][] = function (
+    MetaModels\Events\MetaModelsBootEvent $event
+) {
+    new MetaModels\DcGeneral\Events\Table\Attribute\Alias\Subscriber($event->getServiceContainer());
+};
 
-$GLOBALS['TL_EVENTS'][\ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent::NAME][] =
-    'MetaModels\DcGeneral\Events\Table\Attribute\Alias\PropertyAttribute::registerEvents';

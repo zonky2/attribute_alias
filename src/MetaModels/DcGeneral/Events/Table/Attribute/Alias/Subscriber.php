@@ -17,47 +17,27 @@
 
 namespace MetaModels\DcGeneral\Events\Table\Attribute\Alias;
 
-use ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\IdSerializer;
 use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
 use MetaModels\DcGeneral\Events\BaseSubscriber;
-use MetaModels\Factory;
 
 /**
  * Handle events for tl_metamodel_attribute.alias_fields.attr_id.
  */
-class PropertyAttribute extends BaseSubscriber
+class Subscriber extends BaseSubscriber
 {
     /**
-     * Register all listeners to handle creation of a data container.
-     *
-     * @param CreateEventDispatcherEvent $event The event.
+     * Register all listeners.
      *
      * @return void
      */
-    public static function registerEvents(CreateEventDispatcherEvent $event)
+    public function registerEventsInDispatcher()
     {
-        $dispatcher = $event->getEventDispatcher();
-        self::registerBuildDataDefinitionFor(
-            'tl_metamodel_attribute',
-            $dispatcher,
-            __CLASS__ . '::registerTableMetaModelAttributeEvents'
-        );
-    }
-
-    /**
-     * Register the events for table tl_metamodel_attribute.
-     *
-     * @return void
-     */
-    public static function registerTableMetaModelAttributeEvents()
-    {
-        static $registered;
-        if ($registered) {
-            return;
-        }
-        $registered = true;
-        self::registerListeners(array(GetOptionsEvent::NAME => __CLASS__ . '::getOptions'), func_get_arg(2));
+        $this
+            ->addListener(
+                GetOptionsEvent::NAME,
+                array($this, 'getOptions')
+            );
     }
 
     /**
@@ -67,7 +47,7 @@ class PropertyAttribute extends BaseSubscriber
      *
      * @return bool
      */
-    private static function isEventForMe(GetOptionsEvent $event)
+    private function isEventForMe(GetOptionsEvent $event)
     {
         $input = $event->getEnvironment()->getInputProvider();
         $type  = $event->getModel()->getProperty('type');
@@ -94,7 +74,7 @@ class PropertyAttribute extends BaseSubscriber
      *
      * @return void
      */
-    public static function getOptions(GetOptionsEvent $event)
+    public function getOptions(GetOptionsEvent $event)
     {
         if (self::isEventForMe($event)) {
             return;
@@ -108,7 +88,9 @@ class PropertyAttribute extends BaseSubscriber
             )->getId();
         }
 
-        $metaModel = Factory::byId($metaModelId);
+        $factory       = $this->getServiceContainer()->getFactory();
+        $metaModelName = $factory->translateIdToMetaModelName($metaModelId);
+        $metaModel     = $factory->getMetaModel($metaModelName);
 
         if (!$metaModel) {
             return;
