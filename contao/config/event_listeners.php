@@ -17,15 +17,18 @@
  * @filesource
  */
 
-$GLOBALS['TL_EVENTS'][\MetaModels\MetaModelsEvents::SUBSYSTEM_BOOT_BACKEND][] = function (
-    MetaModels\Events\MetaModelsBootEvent $event
-) {
-    new MetaModels\DcGeneral\Events\Table\Attribute\Alias\Subscriber($event->getServiceContainer());
-};
+use MetaModels\Attribute\Alias\AttributeTypeFactory;
+use MetaModels\Attribute\Events\CreateAttributeFactoryEvent;
+use MetaModels\DcGeneral\Events\Table\Attribute\Alias\Subscriber;
+use MetaModels\Events\MetaModelsBootEvent;
+use MetaModels\MetaModelsEvents;
 
-$GLOBALS['TL_EVENTS'][\MetaModels\MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE][] = function (
-    \MetaModels\Attribute\Events\CreateAttributeFactoryEvent $event
-) {
-    $factory = $event->getFactory();
-    $factory->addTypeFactory(new MetaModels\Attribute\Alias\AttributeTypeFactory());
-};
+return array(
+    MetaModelsEvents::SUBSYSTEM_BOOT_BACKEND => function (MetaModelsBootEvent $event) {
+        new Subscriber($event->getServiceContainer());
+    },
+    MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => function (CreateAttributeFactoryEvent $event) {
+        $factory = $event->getFactory();
+        $factory->addTypeFactory(new AttributeTypeFactory());
+    }
+);

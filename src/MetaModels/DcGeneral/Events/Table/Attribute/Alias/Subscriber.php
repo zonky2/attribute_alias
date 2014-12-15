@@ -8,7 +8,7 @@
  * PHP version 5
  *
  * @package    MetaModels
- * @subpackage Core
+ * @subpackage AttributeAlias
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
