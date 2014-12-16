@@ -24,11 +24,15 @@ use MetaModels\Events\MetaModelsBootEvent;
 use MetaModels\MetaModelsEvents;
 
 return array(
-    MetaModelsEvents::SUBSYSTEM_BOOT_BACKEND => function (MetaModelsBootEvent $event) {
-        new Subscriber($event->getServiceContainer());
-    },
-    MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => function (CreateAttributeFactoryEvent $event) {
-        $factory = $event->getFactory();
-        $factory->addTypeFactory(new AttributeTypeFactory());
-    }
+    MetaModelsEvents::SUBSYSTEM_BOOT_BACKEND => array(
+        function (MetaModelsBootEvent $event) {
+            new Subscriber($event->getServiceContainer());
+        }
+    ),
+    MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => array(
+        function (CreateAttributeFactoryEvent $event) {
+            $factory = $event->getFactory();
+            $factory->addTypeFactory(new AttributeTypeFactory());
+        }
+    )
 );
